@@ -43,6 +43,7 @@ document.querySelector('#new-task input').addEventListener('keyup', function(eve
 
 
 // Pomodoro Functions
+
 let workTittle = document.getElementById('foco');
 let breakTittle = document.getElementById('break');
 let startButton = document.getElementById('start');
@@ -73,11 +74,8 @@ function start() {
         document.getElementById('minutes').innerHTML = workMinutes;
         document.getElementById('seconds').innerHTML = seconds;
 
-        seconds = seconds - 1;
-
         if (seconds === 0) {
-            workMinutes = workMinutes - 1;
-            if (workMinutes === -1) {
+            if (workMinutes === 0) {
                 clearInterval(timerInterval);
 
                 if (breakCount % 2 === 0) {
@@ -93,9 +91,12 @@ function start() {
                 }
 
                 seconds = 59;
-
-                timerInterval = setInterval(timerFunction, 1000);
+            } else {
+                workMinutes = workMinutes - 1;
+                seconds = 59;
             }
+        } else {
+            seconds = seconds - 1;
         }
     }
 
@@ -114,6 +115,3 @@ function start() {
     }
 }
 // Pomodoro Functions
-
-
-
