@@ -1,78 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study App</title>
 
-    <!-- LINK CSS -->
     <link rel="stylesheet" href="src/style/reset.css">
     <link rel="stylesheet" href="src/style/style.css">
-    <!-- LINK CSS -->
 
-    <!-- REMIXICON -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-    <!-- REMIXICON -->
 
-    <!-- GOOGLE FONTS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;800;900&display=swap" rel="stylesheet">
-    <!-- GOOGLE FONTS -->
-
-
 </head>
 <body>
 
     <div class="container">
-    
-    <div class="banner">
-    <header class="ilustracao-banner">
-        <img src="src/image/header-bg.jpg" alt="">
-    </header>
-    </div>
 
-    <!-- POMODORO TIMER  -->
-    <section class="pomodoro-container" >
-        <div class="pomodoro">
-            <h1>Estude pelo metodo pomodoro</h1>
-            <div class="painel">
-                <p id="foco">Foco</p>
-                <p id="break">Break</p>
-            </div>
-    
-            <div class="timer">
-                <div class="circle">
-                    <div class="time">
-                        <p id="minutes"></p>
-                        <p>:</p>
-                        <p id="seconds"></p>
+        <section class="pomodoro-container" >
+            <div class="pomodoro">
+                <h1>Estude pelo método pomodoro</h1>
+                <div class="painel">
+                    <p id="foco">Foco</p>
+                    <p id="break">Break</p>
+                </div>
+
+                <div class="timer">
+                    <div class="circle">
+                        <div class="time">
+                            <p id="minutes"></p>
+                            <p>:</p>
+                            <p id="seconds"></p>
+                        </div>
                     </div>
                 </div>
+
+                <div class="controls">
+                    <button id="start"><i class="ri-play-line"></i></button>
+                    <button id="restart"><i class="ri-loop-left-line"></i></button>
+                </div>
             </div>
-    
-            <div class="controls">
-                <button id="start" onclick="start()" ><i class="ri-play-line"></i></button>
-                <button id="restart"><i class="ri-loop-left-line"></i></button>
-            </div>        
-        </div>
-    </section>
-<!-- POMODORO TIMER  -->
+        </section>
 
+        <section class="todo-list">
+            <div id="new-task">
+                <input type="text" placeholder="Digite aqui as matérias que você planeja estudar hoje...">
+                <button id="push"><i class="ri-add-line"></i>Add</button>
+            </div>
 
-    <!-- TO DO LIST  -->
-    <div class="todo-list">
-        <div id="new-task">
-            <input type="text" placeholder="Digite aqui as matérias que você planeja estudar hoje. .">
-            <button id="push"><i class="ri-add-line"></i>Add</button>
-        </div>
-
-        <div id="tasks">
-
-        </div>
+            <div id="tasks">
+            </div>
+        </section>
     </div>
-     <!-- TO DO LIST  -->
-</div>
+
     <script src="src/js/script.js"></script>
 </body>
 </html>

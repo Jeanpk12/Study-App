@@ -1,117 +1,161 @@
-// To do list functions
+const taskInput = document.querySelector('#new-task input');
+const addTaskButton = document.querySelector('#push');
+const tasksContainer = document.querySelector('#tasks');
+const minutesDisplay = document.getElementById('minutes');
+const secondsDisplay = document.getElementById('seconds');
+const workTitle = document.getElementById('foco');
+const breakTitle = document.getElementById('break');
+const startButton = document.getElementById('start');
+const restartButton = document.getElementById('restart');
 
-function addTask() {
-    if (document.querySelector('#new-task input').value.length == 0) {
-        alert("Você precisa adicionar uma matéria para estudar");
-    } else {
-        var taskContainer = document.createElement('div');
-        taskContainer.className = 'task';
-
-        var taskName = document.createElement('span');
-        taskName.id = 'taskname';
-        taskName.innerText = document.querySelector('#new-task input').value;
-
-        var deleteButton = document.createElement('button');
-        deleteButton.className = 'delete';
-        deleteButton.innerHTML = '<i class="ri-delete-bin-7-line"></i>';
-
-        taskContainer.appendChild(taskName);
-        taskContainer.appendChild(deleteButton);
-
-        document.querySelector('#tasks').appendChild(taskContainer);
-
-        document.querySelector('#new-task input').value = '';
-        
-        deleteButton.onclick = function() {
-            taskContainer.remove();
-        }
-
-        taskContainer.onclick = function() {
+function createTaskElement(taskText) {
+    const taskContainer = document.createElement('div');
+    taskContainer.className = 'task';
+    const taskName = document.createElement('span');
+    taskName.className = 'task-name';
+    taskName.textContent = taskText;
+    const deleteButton = document.createElement('button');
+    deleteButton.className = 'delete';
+    deleteButton.innerHTML = '<i class="ri-delete-bin-7-line"></i>';
+    taskContainer.appendChild(taskName);
+    taskContainer.appendChild(deleteButton);
+    taskContainer.addEventListener('click', (event) => {
+        if (!event.target.closest('.delete')) {
             taskName.classList.toggle('completed');
+            taskContainer.classList.toggle('completed-container');
         }
-    }
+    });
+    deleteButton.addEventListener('click', (event) => {
+        event.stopPropagation();
+        taskContainer.remove();
+    });
+    return taskContainer;
 }
 
-document.querySelector('#push').onclick = addTask;
-
-document.querySelector('#new-task input').addEventListener('keyup', function(event) {
+function handleAddTask() {
+    const taskText = taskInput.value.trim();
+    if (taskText.length === 0) {
+        alert("Você precisa adicionar uma matéria para estudar");
+        return;
+    }
+    const newTask = createTaskElement(taskText);
+    tasksContainer.appendChild(newTask);
+    taskInput.value = '';
+    taskInput.focus();
+}
+addTaskButton.addEventListener('click', handleAddTask);
+taskInput.addEventListener('keyup', (event) => {
     if (event.key === 'Enter') {
-        addTask();
+        handleAddTask();
     }
 });
-// To do list Functions
 
+const WORK_TIME_MINUTES = 25;
+const BREAK_TIME_MINUTES = 5;
 
-// Pomodoro Functions
+let timerInterval = null;
+let currentMinutes = WORK_TIME_MINUTES;
+let currentSeconds = 0;
+let isBreak = false;
+let isPaused = true;
 
-let workTittle = document.getElementById('foco');
-let breakTittle = document.getElementById('break');
-let startButton = document.getElementById('start');
-let restartButton = document.getElementById('restart');
-
-let workTime = 25;
-let breakTime = 5;
-let seconds = "00";
-let timerInterval;
-
-window.onload = () => {
-    document.getElementById('minutes').innerHTML = workTime;
-    document.getElementById('seconds').innerHTML = seconds;
-    workTittle.classList.add('active');
+function formatTime(time) {
+    return time < 10 ? `0${time}` : time;
 }
 
-function start() {
-    startButton.style.display = "none";
-    restartButton.style.display = "block";
+function updateDisplay() {
+    minutesDisplay.textContent = formatTime(currentMinutes);
+    secondsDisplay.textContent = formatTime(currentSeconds);
+}
 
-    seconds = 59;
+function updateTitles() {
+    if (isBreak) {
+        workTitle.classList.remove('active');
+        breakTitle.classList.add('active');
+    } else {
+        workTitle.classList.add('active');
+        breakTitle.classList.remove('active');
+    }
+}
 
-    let workMinutes = workTime - 1;
-    let breakMinutes = breakTime - 1;
-    let breakCount = 0;
+function setTimerMode(switchToBreak) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+    isPaused = true;
+    isBreak = switchToBreak;
+    currentMinutes = isBreak ? BREAK_TIME_MINUTES : WORK_TIME_MINUTES;
+    currentSeconds = 0;
+    updateDisplay();
+    updateTitles();
+    startButton.style.display = "block";
+    restartButton.style.display = "none";
+}
 
-    let timerFunction = () => {
-        document.getElementById('minutes').innerHTML = workMinutes;
-        document.getElementById('seconds').innerHTML = seconds;
-
-        if (seconds === 0) {
-            if (workMinutes === 0) {
-                clearInterval(timerInterval);
-
-                if (breakCount % 2 === 0) {
-                    workMinutes = breakMinutes;
-                    breakCount++;
-                    workTittle.classList.remove('active');
-                    breakTittle.classList.add('active');
-                } else {
-                    workMinutes = workTime;
-                    breakCount++;
-                    breakTittle.classList.remove('active');
-                    workTittle.classList.add('active');
-                }
-
-                seconds = 59;
-            } else {
-                workMinutes = workMinutes - 1;
-                seconds = 59;
-            }
+function tick() {
+    if (isPaused) return;
+    if (currentSeconds > 0) {
+        currentSeconds--;
+    } else {
+        if (currentMinutes > 0) {
+            currentMinutes--;
+            currentSeconds = 59;
         } else {
-            seconds = seconds - 1;
+            isBreak = !isBreak;
+            currentMinutes = isBreak ? BREAK_TIME_MINUTES : WORK_TIME_MINUTES;
+            currentSeconds = 0;
+            updateTitles();
+            if (currentMinutes > 0) {
+                currentMinutes--;
+                currentSeconds = 59;
+            } else {
+                currentSeconds = 0;
+            }
         }
     }
+    updateDisplay();
+}
 
-    timerInterval = setInterval(timerFunction, 1000);
-
-    restartButton.addEventListener('click', restart);
-
-    function restart() {
-        clearInterval(timerInterval); // Clear existing timer interval
-        document.getElementById('minutes').innerHTML = workTime;
-        document.getElementById('seconds').innerHTML = "00";
+function startTimer() {
+    if (!isPaused) return;
+    isPaused = false;
+    startButton.style.display = "none";
+    restartButton.style.display = "block";
+    clearInterval(timerInterval);
+    updateTitles();
+    updateDisplay();
+    if (currentSeconds === 0 && currentMinutes > 0) {
+        currentMinutes--;
+        currentSeconds = 59;
+        updateDisplay();
+    } else if (currentMinutes === 0 && currentSeconds === 0) {
+        isPaused = true;
         startButton.style.display = "block";
         restartButton.style.display = "none";
-        workTittle.classList.add('active');
-        breakTittle.classList.remove('active');
+        console.warn("Timer em 00:00 não pode ser iniciado.");
+        return;
     }
+    timerInterval = setInterval(tick, 1000);
 }
-// Pomodoro Functions
+
+function resetTimer() {
+    setTimerMode(false);
+}
+
+startButton.addEventListener('click', startTimer);
+restartButton.addEventListener('click', resetTimer);
+
+workTitle.addEventListener('click', () => {
+    if (isBreak || currentMinutes !== WORK_TIME_MINUTES || currentSeconds !== 0) {
+         setTimerMode(false);
+    }
+});
+
+breakTitle.addEventListener('click', () => {
+    if (!isBreak || currentMinutes !== BREAK_TIME_MINUTES || currentSeconds !== 0) {
+        setTimerMode(true);
+    }
+});
+
+window.addEventListener('load', () => {
+    resetTimer();
+});
