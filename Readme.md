@@ -3,6 +3,7 @@
 Um aplicativo web simples projetado para ajudar estudantes a gerenciar seu tempo de estudo usando a técnica Pomodoro e a organizar suas tarefas diárias.
 
 ![Study App Screenshot](/src/image/image.png)
+## [Acesse o Projeto](https://jeanpk12.github.io/Study-App/)
 
 ## ✨ Funcionalidades Principais
 
