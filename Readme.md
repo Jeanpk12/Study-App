@@ -2,7 +2,7 @@
 
 Um aplicativo web simples projetado para ajudar estudantes a gerenciar seu tempo de estudo usando a técnica Pomodoro e a organizar suas tarefas diárias.
 
-![Study App Screenshot](![imagem da interface do aplicativo](/src/image/image.png))
+![Study App Screenshot](/src/image/image.png)
 
 ## ✨ Funcionalidades Principais
 
@@ -49,6 +49,4 @@ Como este é um projeto frontend puro (HTML, CSS, JS), você pode executá-lo di
     *   Arraste o arquivo `index.html` para a janela do seu navegador web preferido (Chrome, Firefox, Edge, etc.).
 
 E pronto! O aplicativo deverá carregar no seu navegador.
-
-## 🖼️ Estrutura do Projeto
 
